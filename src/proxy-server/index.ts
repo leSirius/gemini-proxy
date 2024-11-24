@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import {print} from "./utils/std.ts";
-import type {GeminiReq } from "./utils/api";
+import {print} from "../utils/std.ts";
+import type {GeminiReq } from "../utils/api";
 import {geminiChat} from "./gemini.ts";
 
 const port = process.env.PORT || 8080;
@@ -11,15 +11,9 @@ export function startServer() {
     Bun.serve({
         port: port,
         development: isDev,
-        static: {
-            "/static": new Response("Frozen Response.", {
-                headers: {
-                    "X-Custom-Header": "Bun!",
-                },
-            }),
-        },
         fetch: async (req)=> {
             const url = new URL(req.url);
+            console.log(`received ${url}`);
             if (url.pathname === "/") return new Response("Home page!");
             if (url.pathname==="/time") return new Response(dayjs().format("YYYY-MM-DD HH:mm:ss"));
             if (req.method==="POST"&&url.pathname==="/gemini") {
