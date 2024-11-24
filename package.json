@@ -3,7 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run index.ts"
+    "clean": "rm -rf dist && echo 'Done.'",
+    "dev": "bun run ./src/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -13,6 +14,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.21.0"
+    "@google/generative-ai": "^0.21.0",
+    "dayjs": "^1.11.13"
   }
 }
