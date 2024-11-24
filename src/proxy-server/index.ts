@@ -19,15 +19,13 @@ export function startServer() {
             if (req.method==="POST"&&url.pathname==="/gemini") {
                 const body:GeminiReq = await req.json();
                 const {prompt} = body;
-                const answer = await geminiChat(prompt);
-                return  Response.json({answer:answer});
-            }
-            if (url.pathname==="/gemini") {
-                return new Response("Gemini Response.")
+                const result = await geminiChat(prompt);
+                return  Response.json({answer:result.response.text()});
             }
             throw new Error("whoops! A surprise 404");
         },
         error:(e)=>{
+            console.error(e);
             return new Response(e.message);
                 //{ {headers: {"Content-Type": "text/html"} }
         },

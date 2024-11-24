@@ -5,8 +5,9 @@ import {exit} from "process";
 import {json} from "node:stream/consumers";
 import {stringify} from "node:querystring";
 
+const port = process.env.PORT;
 const region = process.env.REGION;
-
+const destination = process.env.DESTINATION??"";
 main();
 
 function main() {
@@ -25,15 +26,15 @@ function main() {
 }
 
 export async function homeConversation() {
-    print(await fetch("http://64.176.224.37:8080"));
     const hint = "Your turn: "
     stdout(hint)
     for await (const line of console) {
-        const response = await fetch("http://64.176.224.37:8080", {
+        const response = await fetch(`http://${destination}:${port}/gemini`, {
             method: "POST",
-            body: stringify({prompt:line}),
+            body: JSON.stringify({prompt:line}),
         });
-        print(await response.json());
+        const body = await response.json();
+        console.log(body.answer);
         stdout(hint);
     }
 }
