@@ -8,6 +8,7 @@ import {stringify} from "node:querystring";
 const port = process.env.PORT;
 const region = process.env.REGION;
 const destination = process.env.DESTINATION??"";
+const token = process.env.TOKEN;
 main();
 
 function main() {
@@ -29,7 +30,7 @@ export async function homeConversation() {
     const hint = "Your turn: "
     stdout(hint)
     for await (const line of console) {
-        const response = await fetch(`http://${destination}:${port}/gemini`, {
+        const response = await fetch(`http://${destination}:${port}/gemini?token=${token}`, {
             method: "POST",
             body: JSON.stringify({prompt:line}),
         });
