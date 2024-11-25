@@ -2,13 +2,11 @@ import { stdout, print } from "./utils/std";
 import { geminiChat } from "./proxy-server/gemini.ts";
 import {startServer} from "./proxy-server";
 import {exit} from "process";
-import {json} from "node:stream/consumers";
-import {stringify} from "node:querystring";
 
 const port = process.env.PORT;
 const region = process.env.REGION;
 const destination = process.env.DESTINATION??"";
-const token = process.env.TOKEN;
+const token =  "random"// process.env.TOKEN;
 main();
 
 function main() {

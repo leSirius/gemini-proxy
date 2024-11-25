@@ -17,7 +17,7 @@ export function startServer() {
             if (req.method==="POST"&&url.pathname==="/gemini") {
                 const token = url.searchParams.get("token");
                 if (token!==passToken) {
-                    return new Response("Invalid token", {status: 401});
+                    return Response.json({message:"Invalid token"}, {status: 401});
                 }
                 const body:GeminiReq = await req.json();
                 const {prompt} = body;
