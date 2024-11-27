@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf dist && echo 'Done.'",
-    "dev": "bun run ./src/index.ts"
+    "dev": "bun run ./src/index.ts",
+    "dev:cn": "bun run --env-file .env.cn ./src/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -15,6 +16,8 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
-    "dayjs": "^1.11.13"
+    "cowsay": "^1.6.0",
+    "dayjs": "^1.11.13",
+    "messagepack": "^1.1.12"
   }
 }

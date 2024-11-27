@@ -1,14 +1,13 @@
 import dayjs from "dayjs";
-import { print } from "../utils/std.ts";
+import { print, saysCow, thinksCow } from "../utils/std.ts";
 import type { GeminiReq } from "../utils/api";
 import { geminiChat } from "../utils/gemini.ts";
 import {listen} from "bun"
-
-const port = Number(process.env.PORT) || 8080;
-const passToken = process.env.TOKEN
+import { portUs as port, token } from "../utils/constant.ts";
+import * as msgpack from 'messagepack';
 
 export function startServer() {
-    print(`Listening at ${port}`);
+    saysCow(`Listening at ${port}`);
     Bun.serve({
         port: port,
         fetch: async (req) => {
@@ -16,8 +15,8 @@ export function startServer() {
             if (url.pathname === "/") return new Response("Home page!");
             if (url.pathname === "/time") return new Response(dayjs().format("YYYY-MM-DD HH:mm:ss"));
             if (req.method === "POST" && url.pathname === "/gemini") {
-                const token = url.searchParams.get("token");
-                if (token !== passToken) {
+                const reqToken = url.searchParams.get("token");
+                if (reqToken !== token) {
                     return Response.json({ message: "Invalid token" }, { status: 401 });
                 }
                 const body: GeminiReq = await req.json();
@@ -36,20 +35,20 @@ export function startServer() {
 
 
 export function startTCPServer() {
-    print(`TCP listening at ${port}`);
+    thinksCow(`TCP listening at ${port}`);
     listen({
         hostname: "66.103.222.168",
         port: port,
         socket: {
             open(socket) {
-                print('New client connected:', socket.remoteAddress);
+                saysCow(`New client connected: ${socket.remoteAddress}`);
             },
             data: (socket, data) => {
-                console.log('Received data:', data.toString());
+                print('Received data:', msgpack.decode(data));
                 socket.write('Hello from the server!\n');
             },
             close: (socket) => {
-                console.log('Client disconnected:', socket.remoteAddress);
+                saysCow(`Client disconnected: ${socket.remoteAddress}`, );
             },
             error: (socket, err) => {
                 console.error('Error:', err);

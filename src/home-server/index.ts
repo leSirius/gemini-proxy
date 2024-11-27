@@ -1,39 +1,37 @@
-import { destination, port, token } from "../utils/constant";
-import { stdout } from "../utils/std";
+import { destination, portUs as port, token } from "../utils/constant";
+import { stdout, print } from "../utils/std";
 import { connect, type Socket } from "bun";
-
-
-
-
-export async function homeConversation() {
-    const hint = "Your turn: ";
-    stdout(hint);
-    for await (const line of console) {
-
-        const response = await fetch(`http://${destination}:${port}/gemini?token=${token}`, {
-            method: "POST",
-            body: JSON.stringify({ prompt: line }),
-        });
-        const body = await response.json();
-        console.log(body.answer);
-        stdout(hint);
-    }
-}
+import * as msgpack from 'messagepack';
 
 export async function tcpConnect(destination:string, port:number) {
-    return connect({
+    const socket = await connect({
         hostname: destination,
         port: port,
         socket: {
-            data(socket, data) {
-                console.log("Received:", data);
+            data:(socket, data)=> {
+                stdout(`Received: ${data.toString()}`);
             },
-            close() {
+            close:()=> {
                 console.log("Connection closed");
             },
             error(error) {
                 console.error("Connection error:", error);
             },
-        },
+            connectError:(socket, error)=> {
+                console.error(error);
+            }, 
+            end:(socket)=> {
+                console.log("Server left us alone")
+            }, 
+            timeout:(socket)=> {
+                console.log("you've run out of your time")
+            }, 
+        }
     });
+    const buffer = 
+    socket.write(msgpack.encode({token:"SECRET"}));
+    setTimeout(() => {
+        socket.write(msgpack.encode("hello again"));
+    }, 3000);
+
 }

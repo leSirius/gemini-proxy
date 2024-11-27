@@ -2,18 +2,15 @@ import { stdout, print } from "./utils/std";
 import { geminiChat } from "./utils/gemini.ts";
 import { startServer, startTCPServer } from "./proxy-server";
 import { exit } from "process";
-import { homeConversation, tcpConnect } from "./home-server/index.ts";
-import { region, destination, port } from "./utils/constant.ts";
+import { tcpConnect } from "./home-server/index.ts";
+import { region, destination, portUs as port } from "./utils/constant.ts";
 
 main();
 
 function main() {
     if (region === "cn") {
         // homeConversation()
-        (async() =>{
-            const socket = await tcpConnect(destination, port);
-    
-        })();
+        tcpConnect(destination, port);
 
     }
     else if (region === "us") {
