@@ -1,20 +1,24 @@
 import { stdout, print } from "./utils/std";
-import { geminiChat } from "./proxy-server/gemini.ts";
-import {startServer} from "./proxy-server";
-import {exit} from "process";
+import { geminiChat } from "./utils/gemini.ts";
+import { startServer, startTCPServer } from "./proxy-server";
+import { exit } from "process";
+import { homeConversation, tcpConnect } from "./home-server/index.ts";
+import { region, destination, port } from "./utils/constant.ts";
 
-const port = process.env.PORT;
-const region = process.env.REGION;
-const destination = process.env.DESTINATION??"";
-const token =  "random"// process.env.TOKEN;
 main();
 
 function main() {
-    if (region==="china"){
-        homeConversation()
+    if (region === "cn") {
+        // homeConversation()
+        (async() =>{
+            const socket = await tcpConnect(destination, port);
+    
+        })();
+
     }
-    else if (region==="us") {
-        startServer();
+    else if (region === "us") {
+        startTCPServer();
+        // startServer();
         // conversationLoop();
     }
     else {
@@ -22,20 +26,6 @@ function main() {
         exit(0);
     }
 
-}
-
-export async function homeConversation() {
-    const hint = "Your turn: "
-    stdout(hint)
-    for await (const line of console) {
-        const response = await fetch(`http://${destination}:${port}/gemini?token=${token}`, {
-            method: "POST",
-            body: JSON.stringify({prompt:line}),
-        });
-        const body = await response.json();
-        console.log(body.answer);
-        stdout(hint);
-    }
 }
 
 export async function conversationLoop() {
